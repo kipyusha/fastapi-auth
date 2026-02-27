@@ -17,3 +17,8 @@ app = FastAPI(lifespan=lifespan)
 @app.get("/")
 async def root():
     return {"status": "ok"}
+
+@app.get("startup")
+async def startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
