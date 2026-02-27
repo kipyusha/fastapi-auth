@@ -28,7 +28,7 @@ async def login(data, db: AsyncSession):
     res = await db.execute(select(User).where(User.email == data.email))
     user = res.scalar_one_or_none()
 
-    if not user or not verify_password(data.password, user.password):
+    if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     
     if not user.is_active:
