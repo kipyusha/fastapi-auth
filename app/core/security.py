@@ -8,6 +8,7 @@ pwd = CryptContext(schemes=["bcrypt"])
 ALGO = "HS256"
 
 def hash_password(password: str):
+    password = password[:72]
     return pwd.hash(password)
 
 def verify_password(plain_password, hashed_password):

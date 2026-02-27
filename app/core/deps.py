@@ -7,9 +7,11 @@ from app.core.config import settings
 from app.models.user import User
 from app.core.database import SessionLocal
 
+
 async def get_db():
     async with SessionLocal() as session:
         yield session
+
 
 oauth2 = OAuth2PasswordBearer(tokenUrl="auth/login")
 

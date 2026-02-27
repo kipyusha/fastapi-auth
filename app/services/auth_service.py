@@ -12,11 +12,11 @@ async def register(data, db: AsyncSession):
     res = await db.execute(select(User).where(User.email == data.email))
     if res.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email exists")
-    
+    hashed_password = hash_password(data.password)
     user = User(
         email = data.email,
         name = data.name,
-        password = hash_password(data.password)
+        password_hash = hashed_password
     )
     db.add(user)
     await db.commit()
@@ -28,7 +28,7 @@ async def login(data, db: AsyncSession):
     res = await db.execute(select(User).where(User.email == data.email))
     user = res.scalar_one_or_none()
 
-    if not user or not verify_password(data.password, user.password_confirm):
+    if not user or not verify_password(data.password, user.password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     
     if not user.is_active:
