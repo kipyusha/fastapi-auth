@@ -13,12 +13,14 @@ async def get_db():
         yield session
 
 
-oauth2 = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 async def get_current_user(token: str = Depends(oauth2), db = Depends(get_db)):
+    
     try:
+        
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-        user_id = int(payload("sub"))
+        user_id = int(payload.get("sub"))
     except:
         raise HTTPException(status_code=401, detail="Invalid token")
     
