@@ -38,6 +38,10 @@ async def me(user = Depends(get_current_user)):
 async def update(data: UserUpdate, user = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     if data.name:
         user.name = data.name
+    if data.last_name:
+        user.last_name = data.last_name
+    if data.middle_name:
+        user.middle_name = data.middle_name
     await db.commit()
     return user
 
