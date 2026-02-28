@@ -14,9 +14,11 @@ async def register(data, db: AsyncSession):
         raise HTTPException(status_code=400, detail="Email exists")
     hashed_password = hash_password(data.password)
     user = User(
-        email = data.email,
         name = data.name,
-        password_hash = hashed_password
+        last_name = data.last_name,
+        middle_name = data.middle_name,
+        email = data.email,
+        password_hash = hashed_password,
     )
     db.add(user)
     await db.commit()
