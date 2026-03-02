@@ -1,11 +1,8 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 from enum import Enum
 from typing import Optional
 
-class UserRole(str, Enum):
-    USER = "USER"
-    MANAGER = "MANAGER"
-    ADMIN = "ADMIN"
+
 
 class RegisterUser(BaseModel):
     name: str
@@ -14,7 +11,7 @@ class RegisterUser(BaseModel):
     email: EmailStr
     password: str 
     password_confirm: str
-    role: UserRole = UserRole.USER
+    role: str = "user"
 
 class LoginSchema(BaseModel):
     email: EmailStr
@@ -24,7 +21,7 @@ class UserUpdate(BaseModel):
     name: str | None = None
     last_name: str | None = None
     middle_name: str | None = None
-    role: Optional[UserRole] = None
+    role: str = None
 
 class UserOut(BaseModel):
     id: int
@@ -32,7 +29,17 @@ class UserOut(BaseModel):
     name: str
     last_name: str
     middle_name: str
-    role: UserRole
+    role: str
     
     class Config:
         from_attributes = True
+
+class ChangeRoleRequest(BaseModel):
+    email: EmailStr
+    new_role: str
+    @field_validator('new_role')
+    def validate_role(cls, v):
+        allowed = ["user", "manager", "admin"]
+        if v not in allowed:
+            raise ValueError(f'The role must be: {allowed}')
+        return v
