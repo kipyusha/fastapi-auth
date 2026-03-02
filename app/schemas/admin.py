@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import List
 from app.schemas.user import UserRole, UserOut
 
 class UserSearch(BaseModel):
